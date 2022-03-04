@@ -3,41 +3,45 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
 app.set("view engine", "ejs");
 
+var items = [];
+var works = [];
 app.get("/", function (req, res) {
   var today = new Date();
-  var currentDay = today.getDay();
-  var day = "";
 
-  switch (currentDay) {
-    case 0:
-      day = "Sunday";
-      break;
-    case 1:
-      day = "Monday";
-      break;
-    case 2:
-      day = "Tuesday";
-      break;
-    case 3:
-      day = "Wednesday";
-      break;
-    case 4:
-      day = "Thursday";
-      break;
-    case 5:
-      day = "Friday";
-      break;
-    case 6:
-      day = "Saturday";
-      break;
+  var options = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  };
 
-    default:
-      console.log("Error...");
-      break;
+  var day = today.toLocaleDateString("en-US", options);
+
+  res.render("list", { listTitle: day, newItemsArray: items });
+});
+
+app.get("/work", function (req, res) {
+  res.render("list", { listTitle: "Work", newItemsArray: works });
+});
+
+app.get("/about", function (req, res) {
+  res.render("about");
+});
+
+app.post("/", function (req, res) {
+  var item = req.body.newItemText;
+
+  if (req.body.button === "Work") {
+    works.push(item);
+    res.redirect("/work");
+  } else {
+    items.push(item);
+    res.redirect("/");
   }
-  res.render("list", { kindOfDay: day });
 });
 
 app.listen(3000, function () {
