@@ -4,12 +4,17 @@
 </div>
 
 <div class="box">
-  <% for( var index = 0; index < newItemsArray.length; index++ ) { %>
-  <div class="item">
-    <input type="checkbox" />
-    <p><%= newItemsArray[index] %></p>
-  </div>
-  <% } %>
+  <% newItemsArray.forEach(item => { %>
+
+  <form action="/delete" method="post">
+    <div class="item">
+      <input type="checkbox" name="checkbox" value="<%= item._id %>" onChange="this.form.submit()" />
+      <p><%= item.name %></p>
+    </div>
+    <input type="hidden" name="listName" value="<%= listTitle %>">
+  </form>
+
+  <% }) %>
 
   <form class="item" action="/" method="post">
     <input
@@ -19,7 +24,7 @@
       autocomplete="off"
       autofocus="on"
     />
-    <button type="submit" name="button" value="<%= listTitle %>">+</button>
+    <button type="submit" name="list" value="<%= listTitle %>">+</button>
   </form>
 </div>
 <%- include("footer") -%>
